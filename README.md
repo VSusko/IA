@@ -1,1 +1,1 @@
-# Repositório para a disciplina de Inteligência Artificial
+ Repositório para a disciplina de Inteligência Artificial
