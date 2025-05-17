@@ -2,21 +2,25 @@ from random import *
 import matplotlib.pyplot as plt
 import numpy as np
 
+# Definição das constantes
+QTD_DIAS       = 200
+NUM_SIMULACOES = 2000
+
 # Função que gera um vetor de numeros entre 200 e 400 para o consumo diario
-def gerar_consumos(qtd_dias=20):
+def gerar_consumos():
   # Vetor que armazenará os valores para a simulação dos consumos diários
   consumos = []
   # São gerados 20 valores entre 200KWh e 400KWh
-  for i in range(qtd_dias): 
+  for i in range(QTD_DIAS): 
     consumos.append(randint(200, 400))
   return consumos
 
 # Função que gera um vetor de numeros entre 0.5 e 2 para o preço do Kwh
-def gerar_precos(qtd_dias=20):
+def gerar_precos():
   # Vetor que armazenará os valores para a simulação do preço do KWh
   precos = []
   # São gerados 20 valores entre R$0.50 e R$2.00
-  for i in range(qtd_dias): 
+  for i in range(QTD_DIAS): 
     precos.append(0.5 + 1.5 * random())
   return precos
 
@@ -73,10 +77,10 @@ class Agente():
     self.preco_atual = self.media = ambiente.percebe_preco_atual()  # Variável para o preço atual do Kwh
 
   # Função que executa o agente, decidindo ou não comprar mais cargas 
-  def executa_agente(self, media_movel, qtde_dias=20):
+  def executa_agente(self, media_movel):
     
     # Loop principal
-    for i in range(qtde_dias): 
+    for i in range(QTD_DIAS): 
       # O agente percebe o estado do ambiente
       print(f"Dia: {i+1}")
       self.estoque= self.ambiente.percebe_estoque()         # Obtenção do novo estoque
@@ -90,9 +94,9 @@ class Agente():
           Se a soma do estoque atual com 300 for maior do que o limite superior do DataCenter (500Kwh),
           então será comprado a quantidade para completar o estoque.
       '''
-      if (self.preco_atual < self.media) or (self.estoque <= 100):
+      if (self.preco_atual < self.media) or (self.estoque <= 200):
         if (self.estoque + 300) <= 500: 
-          compra= 300
+          compra= 400
         else:
           compra= 500 - self.estoque
       else:
@@ -152,7 +156,7 @@ class Imprime:
 # # Agente da média simples
 # ambiente_atuacao_simples = Ambiente()
 # smart_house_media_simples = Agente(ambiente_atuacao_simples)
-# total_dias_simulados_simples = smart_house_media_simples.executa_agente(False, 20)
+# total_dias_simulados_simples = smart_house_media_simples.executa_agente(False, QTD_DIAS)
 # print(f"Total de dias simulados: {total_dias_simulados_simples}\n")
 # print(f"Total gasto: {smart_house_media_simples.total_gasto}\n")
 # Imprime.imprime_resultado(smart_house_media_simples)
@@ -160,7 +164,7 @@ class Imprime:
 # # Agente da média móvel
 # ambiente_atuacao_movel = Ambiente()
 # smart_house_media_movel = Agente(ambiente_atuacao_movel)
-# total_dias_simulados_movel = smart_house_media_movel.executa_agente(True, 20)
+# total_dias_simulados_movel = smart_house_media_movel.executa_agente(True, QTD_DIAS)
 # print(f"Total de dias simulados: {total_dias_simulados_movel}\n")
 # print(f"Total gasto: {smart_house_media_movel.total_gasto}")
 # Imprime.imprime_resultado(smart_house_media_movel)
@@ -176,7 +180,7 @@ while True:
   # Agente da média simples
   ambiente = Ambiente()
   smart_house_media_simples = Agente(ambiente)
-  total_dias_simulados_simples = smart_house_media_simples.executa_agente(False, 20)
+  total_dias_simulados_simples = smart_house_media_simples.executa_agente(False)
 
   # Se o numero de dias simulado for menor ou igual a 5, recomece
   if total_dias_simulados_simples <= 5: 
@@ -191,7 +195,7 @@ while True:
   
   # Agente da média móvel
   smart_house_media_movel = Agente(ambiente)
-  total_dias_simulados_movel = smart_house_media_movel.executa_agente(True, 20)
+  total_dias_simulados_movel = smart_house_media_movel.executa_agente(True)
   
   # Se o numero de dias for menor ou igual a 5, recomece
   if total_dias_simulados_movel <= 5:
@@ -227,7 +231,7 @@ while True:
   # Aumento do numero de simulacoes
   simulacoes += 1
   
-  if simulacoes == 2000:
+  if simulacoes == NUM_SIMULACOES:
     break
 
 print(f"Métrica media simples dias: {metrica_media_simples_dias}\n")
