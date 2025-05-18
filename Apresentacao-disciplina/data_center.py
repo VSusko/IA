@@ -3,8 +3,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # Definição das constantes
-QTD_DIAS       = 200
-NUM_SIMULACOES = 2000
+QTD_DIAS       = 20   # Quantidade de dias simulados
+NUM_SIMULACOES = 2000 # Número total de simulações
 
 # Função que gera um vetor de numeros entre 200 e 400 para o consumo diario
 def gerar_consumos():
@@ -154,19 +154,25 @@ class Imprime:
     plt.show()
 
 # # Agente da média simples
-# ambiente_atuacao_simples = Ambiente()
-# smart_house_media_simples = Agente(ambiente_atuacao_simples)
-# total_dias_simulados_simples = smart_house_media_simples.executa_agente(False, QTD_DIAS)
-# print(f"Total de dias simulados: {total_dias_simulados_simples}\n")
-# print(f"Total gasto: {smart_house_media_simples.total_gasto}\n")
+# ambiente = Ambiente()
+# smart_house_media_simples = Agente(ambiente)
+# total_dias_simulados_simples = smart_house_media_simples.executa_agente(False)
+# print(f"Total de dias simulados na média simples: {total_dias_simulados_simples}\n")
+# print(f"Total gasto na média simples: {smart_house_media_simples.total_gasto}\n")
 # Imprime.imprime_resultado(smart_house_media_simples)
 
+# # Reset do ambiente
+# ambiente.num_dias=0                       
+# ambiente.estoque=300                      
+# ambiente.historico_preco=[1.5]            
+# ambiente.historico_estoque=[ambiente.estoque] 
+# ambiente.historico_qtde_comprados=[0] 
+
 # # Agente da média móvel
-# ambiente_atuacao_movel = Ambiente()
-# smart_house_media_movel = Agente(ambiente_atuacao_movel)
-# total_dias_simulados_movel = smart_house_media_movel.executa_agente(True, QTD_DIAS)
-# print(f"Total de dias simulados: {total_dias_simulados_movel}\n")
-# print(f"Total gasto: {smart_house_media_movel.total_gasto}")
+# smart_house_media_movel = Agente(ambiente)
+# total_dias_simulados_movel = smart_house_media_movel.executa_agente(True)
+# print(f"Total de dias simulados na média móvel: {total_dias_simulados_movel}\n")
+# print(f"Total gasto na média móvel: {smart_house_media_movel.total_gasto}")
 # Imprime.imprime_resultado(smart_house_media_movel)
 
 metrica_media_simples_dias = 0        # Variável que contabiliza quantas vezes a média simples durou mais tempo
