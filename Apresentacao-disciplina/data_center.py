@@ -3,9 +3,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # Definição das constantes
-QTD_DIAS       = 300    # Quantidade de dias simulados
+QTD_DIAS       = 100   # Quantidade de dias simulados
 NUM_SIMULACOES = 2000  # Número total de simulações
 MODO_IMPRESSAO = False # Define se serão mostrados os valores no terminal
+CODIGO_MAIN    = 2     # Define qual main será executada: 1 para geração de gráficos e 2 para geração das estatísticas
 
 # Função que gera um vetor de numeros entre 200 e 400 para o consumo diario
 def gerar_consumos():
@@ -173,84 +174,93 @@ class Imprime:
     axis3.legend()
     plt.show()
 
-# # Agente da média simples
-# ambiente = Ambiente()
-# smart_house_media_simples = Agente(ambiente)
-# total_dias_simulados_simples = smart_house_media_simples.executa_agente(False)
-# Imprime.imprime_resultado(smart_house_media_simples)
-
-# # Reset do ambiente
-# ambiente.num_dias=0                       
-# ambiente.estoque=300                      
-# ambiente.historico_preco=[1.5]            
-# ambiente.historico_estoque=[ambiente.estoque] 
-# ambiente.historico_qtde_comprados=[0] 
-
-# # Agente da média móvel
-# smart_house_media_movel = Agente(ambiente)
-# total_dias_simulados_movel = smart_house_media_movel.executa_agente(True)
-# Imprime.imprime_resultado(smart_house_media_movel)
-
-# print(f"Total de dias simulados na média simples: {total_dias_simulados_simples}\n")
-# print(f"Total gasto na média simples: {smart_house_media_simples.total_gasto}\n")
-# print(f"Total de dias simulados na média móvel: {total_dias_simulados_movel}\n")
-# print(f"Total gasto na média móvel: {smart_house_media_movel.total_gasto}")
-
-metrica_media_simples_total_gasto = 0 # Variável que contabiliza quantas vezes a média simples produziu gastos menores
-metrica_media_movel_total_gasto = 0   # Variável que contabiliza quantas vezes a média móvel produziu gastos menores
-empate_total_gasto = 0 # Variável que contabiliza empate no dinheiro total gasto nas duas médias
-simulacoes = 0 # Número de simulacoes totais
-while True:
+# =========================== MAIN PARA GERAÇÃO DE GRÁFICOS ===========================
+if CODIGO_MAIN == 1:
   # Agente da média simples
   ambiente = Ambiente()
   smart_house_media_simples = Agente(ambiente)
   total_dias_simulados_simples = smart_house_media_simples.executa_agente(False)
+  Imprime.imprime_resultado(smart_house_media_simples)
 
-  # Se o numero de dias simulado for menor ou igual a 5, recomece
-  if total_dias_simulados_simples < QTD_DIAS: 
-    continue
-  
   # Reset do ambiente
   ambiente.num_dias=0                       
   ambiente.estoque=300                      
   ambiente.historico_preco=[1.5]            
   ambiente.historico_estoque=[ambiente.estoque] 
-  ambiente.historico_qtde_comprados=[0]     
-  
+  ambiente.historico_qtde_comprados=[0] 
+
   # Agente da média móvel
   smart_house_media_movel = Agente(ambiente)
   total_dias_simulados_movel = smart_house_media_movel.executa_agente(True)
-  
-  # Se o numero de dias for menor ou igual a 5, recomece
-  if total_dias_simulados_movel < QTD_DIAS:
-    continue
-  
-  if MODO_IMPRESSAO:
-    print(f"Total de dias simulados: {QTD_DIAS}\n")
-    print(f"Total gasto (media simples): {smart_house_media_simples.total_gasto}\n")
-    print(f"Total gasto (media movel): {smart_house_media_movel.total_gasto}")
-  
-  ''' Se a media simples produziu menos gasto, o contador aumenta em 1 
-      Se a media movel produziu menos gasto, o contador aumenta em 1
-      Em caso de empate, nenhumas das duas aumenta e ele é contabilizado
-  '''
-  if smart_house_media_simples.total_gasto < smart_house_media_movel.total_gasto:
-     metrica_media_simples_total_gasto += 1
-  elif smart_house_media_simples.total_gasto > smart_house_media_movel.total_gasto:
-     metrica_media_movel_total_gasto += 1
+  Imprime.imprime_resultado(smart_house_media_movel)
+
+  print(f"Total de dias simulados na média simples: {total_dias_simulados_simples}\n")
+  print(f"Total gasto na média simples: {smart_house_media_simples.total_gasto}\n")
+  print(f"Total de dias simulados na média móvel: {total_dias_simulados_movel}\n")
+  print(f"Total gasto na média móvel: {smart_house_media_movel.total_gasto}\n")
+  if smart_house_media_movel.total_gasto - smart_house_media_simples.total_gasto > 0:
+    print(f"A média simples produziu menos gastos. A diferença dos gastos é: {smart_house_media_movel.total_gasto - smart_house_media_simples.total_gasto}")
   else:
-    empate_total_gasto += 1
-  
-  # Aumento do numero de simulacoes
-  simulacoes += 1
-  
-  if simulacoes == NUM_SIMULACOES:
-    break
+    print(f"A média móvel produziu menos gastos. A diferença dos gastos é: {smart_house_media_simples.total_gasto - smart_house_media_movel.total_gasto}")
 
-print(f"Número de vezes em que a média simples gerou menos custo: {metrica_media_simples_total_gasto}\n")
-print(f"Número de vezes em que a média móvel gerou menos custo: {metrica_media_movel_total_gasto}\n")
-print(f"Número de empates do custo: {empate_total_gasto}\n")
 
-print(f"A média simples faz com que o Data Center tenha menos despesas em {metrica_media_simples_total_gasto/NUM_SIMULACOES*100:.2f}% dos casos\n")
-print(f"A média móvel faz com que o Data Center tenha menos despesas em {metrica_media_movel_total_gasto/NUM_SIMULACOES*100:.2f}% dos casos\n")
-print(f"As duas médias são iguais quanto às despesas do Data Center em {empate_total_gasto/NUM_SIMULACOES*100:.2f}% dos casos\n")
+# =========================== MAIN PARA GERAÇÃO DE ESTATÍSTICAS ===========================
+if CODIGO_MAIN == 2:
+  metrica_media_simples_total_gasto = 0 # Variável que contabiliza quantas vezes a média simples produziu gastos menores
+  metrica_media_movel_total_gasto = 0   # Variável que contabiliza quantas vezes a média móvel produziu gastos menores
+  empate_total_gasto = 0 # Variável que contabiliza empate no dinheiro total gasto nas duas médias
+  simulacoes = 0 # Número de simulacoes totais
+  while True:
+    # Agente da média simples
+    ambiente = Ambiente()
+    smart_house_media_simples = Agente(ambiente)
+    total_dias_simulados_simples = smart_house_media_simples.executa_agente(False)
+
+    # Se o numero de dias simulado for menor ou igual a 5, recomece
+    if total_dias_simulados_simples < QTD_DIAS: 
+      continue
+    
+    # Reset do ambiente
+    ambiente.num_dias=0                       
+    ambiente.estoque=300                      
+    ambiente.historico_preco=[1.5]            
+    ambiente.historico_estoque=[ambiente.estoque] 
+    ambiente.historico_qtde_comprados=[0]     
+    
+    # Agente da média móvel
+    smart_house_media_movel = Agente(ambiente)
+    total_dias_simulados_movel = smart_house_media_movel.executa_agente(True)
+    
+    # Se o numero de dias for menor ou igual a 5, recomece
+    if total_dias_simulados_movel < QTD_DIAS:
+      continue
+    
+    if MODO_IMPRESSAO:
+      print(f"Total de dias simulados: {QTD_DIAS}\n")
+      print(f"Total gasto (media simples): {smart_house_media_simples.total_gasto}\n")
+      print(f"Total gasto (media movel): {smart_house_media_movel.total_gasto}")
+    
+    ''' Se a media simples produziu menos gasto, o contador aumenta em 1 
+        Se a media movel produziu menos gasto, o contador aumenta em 1
+        Em caso de empate, nenhumas das duas aumenta e ele é contabilizado
+    '''
+    if smart_house_media_simples.total_gasto < smart_house_media_movel.total_gasto:
+      metrica_media_simples_total_gasto += 1
+    elif smart_house_media_simples.total_gasto > smart_house_media_movel.total_gasto:
+      metrica_media_movel_total_gasto += 1
+    else:
+      empate_total_gasto += 1
+    
+    # Aumento do numero de simulacoes
+    simulacoes += 1
+    
+    if simulacoes == NUM_SIMULACOES:
+      break
+
+  print(f"Número de vezes em que a média simples gerou menos custo: {metrica_media_simples_total_gasto}\n")
+  print(f"Número de vezes em que a média móvel gerou menos custo: {metrica_media_movel_total_gasto}\n")
+  print(f"Número de empates do custo: {empate_total_gasto}\n")
+
+  print(f"A média simples faz com que o Data Center tenha menos despesas em {metrica_media_simples_total_gasto/NUM_SIMULACOES*100:.2f}% dos casos\n")
+  print(f"A média móvel faz com que o Data Center tenha menos despesas em {metrica_media_movel_total_gasto/NUM_SIMULACOES*100:.2f}% dos casos\n")
+  print(f"As duas médias são iguais quanto às despesas do Data Center em {empate_total_gasto/NUM_SIMULACOES*100:.2f}% dos casos\n")
